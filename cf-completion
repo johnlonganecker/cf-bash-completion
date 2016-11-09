@@ -1,0 +1,64 @@
+_org()
+{
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  # already specified a specific org, autocomplete for the --guid flag
+  if [[ "$cur" == -* ]]; then
+    COMPREPLY=( $(compgen -W "--guid" -- $cur) )
+    return 0
+  fi
+
+  # autocomplete with orgs from cf command
+  if [[ "$prev" != "org" ]]; then
+    COMPREPLY=( $(compgen -W "$(cf orgs | awk 'NR>3' | tr '\n' ' ')" -- $cur) )
+    return 0
+  fi
+}
+
+_target()
+{
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  if [[ "$prev" == -o ]]; then
+    COMPREPLY=( $(compgen -W "$(cf orgs | awk 'NR>3' | tr '\n' ' ')" -- $cur) )
+    return 0
+  elif [[ "$prev" == -s ]]; then
+    COMPREPLY=( $(compgen -W "$(cf spaces | awk 'NR>3' | tr '\n' ' ')" -- $cur) )
+    return 0
+  else
+    COMPREPLY=( $(compgen -W "-o -s" -- $cur) )
+    return 0
+  fi
+}
+
+_cf()
+{
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  case ${COMP_WORDS[1]} in
+    org)
+      _org
+      return 0
+      ;;
+    org-users)
+      COMPREPLY=( $(compgen -W "$(cf orgs | awk 'NR>3' | tr '\n' ' ')" -- $cur) )
+      return 0
+      ;;
+    orgs)
+      COMPREPLY=( $(compgen -W "help --help" -- $cur) )
+      return 0
+      ;;
+    target)
+      _target
+      return 0
+      ;;
+  esac
+
+  if [[ $COMP_CWORD -eq 1 ]]; then
+    COMPREPLY=( $(compgen -W "help target api auth apps app push scale delete rename start stop restart restage restart-app-instance events files logs env set-env unset-env stacks stack copy-source create-app-manifest get-health-check set-health-check enable-ssh disable-ssh ssh-enabled ssh marketplace services service create-service update-service delete-service rename-service create-service-key service-keys service-key delete-service-key bind-service unbind-service create-user-provided-service update-user-provided-service orgs org create-org delete-org rename-org spaces space create-space delete-space rename-space allow-space-ssh disallow-space-ssh space-ssh-allowed domains create-domain delete-domain create-shared-domain delete-shared-domain routes create-route check-route map-route unmap-route delete-route delete-orphaned-routes router-groups buildpacks create-buildpack update-buildpack rename-buildpack delete-buildpack create-user delete-user org-users set-org-role unset-org-role space-users set-space-role unset-space-role quotas quota set-quota create-quota delete-quota update-quota share-private-domain unshare-private-domain space-quotas space-quota create-space-quota update-space-quota delete-space-quota set-space-quota unset-space-quota service-auth-tokens create-service-auth-token update-service-auth-token delete-service-auth-token service-brokers create-service-broker update-service-broker delete-service-broker rename-service-broker migrate-service-instances purge-service-offering purge-service-instance service-access enable-service-access disable-service-access security-group security-groups create-security-group update-security-group delete-security-group bind-security-group unbind-security-group bind-staging-security-group staging-security-groups unbind-staging-security-group bind-running-security-group running-security-groups unbind-running-security-group running-environment-variable-group staging-environment-variable-group set-staging-environment-variable-group set-running-environment-variable-group feature-flags feature-flag enable-feature-flag disable-feature-flag curl config oauth-token ssh-code add-plugin-repo remove-plugin-repo list-plugin-repos repo-plugins plugins install-plugin uninstall-plugin dev --version -v --build -b --help -h" -- $cur) )
+  fi
+}
+complete -F _cf cf
