@@ -285,6 +285,42 @@ _copy_source()
   fi
 }
 
+_create_app_manifest()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "create-app-manifest" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "-p --help"
+  fi
+}
+
+_get_health_check()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "get-health-check" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "--help"
+  fi
+}
+
+_set_health_check()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "set-health-check" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "--help port none"
+  fi
+}
+
 _cf()
 {
   #COMP_WORDBREAKS="\"'@><=;|&("
@@ -388,15 +424,15 @@ _cf()
         return 0
         ;;
       create-app-manifest)
-        _compgen "--help" $cur
+        _compgen "$(_create_app_manifest)" $cur
         return 0
         ;;
       get-health-check)
-        _compgen "--help" $cur
+        _compgen "$(_get_health_check)" $cur
         return 0
         ;;
       set-health-check)
-        _compgen "--help" $cur
+        _compgen "$(_set_health_check)" $cur
         return 0
         ;;
       enable-ssh)
