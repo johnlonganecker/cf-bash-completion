@@ -321,6 +321,31 @@ _set_health_check()
   fi
 }
 
+_enable_ssh()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "enable-ssh" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "--help"
+  fi
+}
+
+_disable_ssh()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "disable-ssh" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "--help"
+  fi
+}
+
+
 _cf()
 {
   #COMP_WORDBREAKS="\"'@><=;|&("
@@ -436,11 +461,11 @@ _cf()
         return 0
         ;;
       enable-ssh)
-        _compgen "--help" $cur
+        _compgen "$(_enable_ssh)" $cur
         return 0
         ;;
       disable-ssh)
-        _compgen "--help" $cur
+        _compgen "$(_disable_ssh)" $cur
         return 0
         ;;
       ssh-enabled)
