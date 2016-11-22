@@ -345,6 +345,29 @@ _disable_ssh()
   fi
 }
 
+_ssh_enabled()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "ssh-enabled" ]]; then
+    echo "$(_get_apps)"
+  else
+    echo "--help"
+  fi
+}
+
+_ssh()
+{
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local prev_prev=${COMP_WORDS[COMP_CWORD-2]}
+
+  if [[ "$prev" == "ssh" ]]; then
+    echo "$(_get_apps)"
+  elif [[ "" == ""]]; then
+    
+  fi
+}
 
 _cf()
 {
@@ -469,7 +492,7 @@ _cf()
         return 0
         ;;
       ssh-enabled)
-        _compgen "--help" $cur
+        _compgen "$(_ssh_enabled)" $cur
         return 0
         ;;
       ssh)
