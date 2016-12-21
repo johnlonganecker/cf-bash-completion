@@ -364,8 +364,8 @@ _ssh()
 
   if [[ "$prev" == "ssh" ]]; then
     echo "$(_get_apps)"
-  elif [[ "" == ""]]; then
-    
+  else
+    echo "-i -c -L --skip-host-validation --skip-remote-execution --request-pseudo-tty --force-pseudo-tty --disable-pseudo-tty"
   fi
 }
 
@@ -496,7 +496,7 @@ _cf()
         return 0
         ;;
       ssh)
-        _compgen "--help" $cur
+        _compgen "$(_ssh)" $cur
         return 0
         ;;
 
